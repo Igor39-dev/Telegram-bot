@@ -5,7 +5,7 @@ import json
 APIkey = 'QTBtzCeH5LjU6YntGoaQ362oD6vCY4SE'
 TOKEN = '8024038321:AAEIRsQlAPNASjdryeo7ZVoukHS0G1oyPJI'
 
-url = "https://api.apilayer.com/exchangerates_data/latest?symbols=symbols&base=base"
+url = "https://api.apilayer.com/exchangerates_data/convert?to=to&from=from&amount=amount"
 
 payload = {}
 headers= {
@@ -23,6 +23,9 @@ keys = {'доллар': 'USD',
         'евро': 'EUR',
         'рубли': 'RUB',
 }
+
+
+
 
 @bot.message_handler(commands=['start', 'help'])
 def help(message: telebot.types.Message):
@@ -47,17 +50,14 @@ def convert(message: telebot.types.Message):
     from_code = keys[currency_from]
     to_code = keys[currency_to]
 
-    r = requests.get(f'https://api.apilayer.com/exchangerates_data/latest?symbols={to_code}&base={from_code}', headers=headers)
     # r = requests.get(url, headers=headers)
-    rate = json.loads(r.content)['rates'][to_code]
-    converted = amount * rate
+    r = requests.get(f'https://api.apilayer.com/exchangerates_data/convert?from={from_code}&to={to_code}&amount={amount}', headers=headers)
+    
+    data = json.loads(r.content)
+    converted = data['result']
 
-    # result = json.loads(r.content)
-    # converted= result['result']
-
-    text = f'{amount} {currency_from} = {converted:.2f} {currency_to}'
+    text = f'{amount} {from_code} = {converted:.2f} {to_code}'
     bot.send_message(message.chat.id, text)
     
-# print(result)
 
 bot.polling()
