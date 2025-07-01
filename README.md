@@ -1,2 +1,2 @@
 # Telegram-bot
-Currencty_ex_bot
+Currency_ex_bot
